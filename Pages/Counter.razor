@@ -1,0 +1,66 @@
+﻿@page "/counter"
+
+<PageTitle>Counter</PageTitle>
+
+@* <h1>Counter</h1>
+
+<p role="status">Current count: @currentCount</p>
+
+<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+ *@
+
+@* <div class="row bg-dark text-white">
+    <div class="col bg-warning">
+        <h1>Inline Section 1</h1>
+        <p>This is some content</p>
+    </div>
+    <div class="col bg-gradient">
+        <h2>Inline Section 1</h2>
+        <p>This is some content</p>
+    </div>
+</div>
+
+<div class="mt-3 row bg-primary text-white">
+    <h1 class="text-center">Amplifier</h1>
+    <div class="col bg-danger">
+        <h1>Inline Section 2</h1>
+        <p>This is some content</p>
+    </div>
+    <div class="col">
+        <h2>Inline Section 2</h2>
+        <p>This is some content</p>
+    </div>
+</div> *@
+
+<div class="row justify-content-center">
+
+    <div class="col-6 col-sm-3 bg-danger p-1">
+        .col-6 .col-sm-3
+        <button class="btn btn-primary">Details</button>
+    </div>
+    <div class="col-6 col-sm-3 bg-primary">
+        .col-6 .col-sm-3
+        <button class="btn btn-success">Details</button>
+    </div>
+
+    <!-- Force next columns to break to new line -->
+    <div class="w-100"></div>
+
+    <div class="col-6 col-sm-3 bg-warning">
+        .col-6 .col-sm-3
+        <button class="btn btn-danger">Details</button>
+    </div>
+    <div class="col-6 col-sm-3 bg-dark text-white">
+        .col-6 .col-sm-3
+        <button class="btn btn-warning">Details</button>
+    </div>
+</div>
+
+@code {
+    private int currentCount = 0;
+
+    private void IncrementCount()
+    {
+        currentCount++;
+    }
+}

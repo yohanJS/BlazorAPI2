@@ -1,0 +1,174 @@
+﻿@page "/amplifiers"
+@using System.Text.Json
+@using System.ComponentModel.DataAnnotations
+@using System.ComponentModel.DataAnnotations.Schema
+@using Microsoft.AspNetCore.Http
+
+<section style="background-color: #eee;">
+    <div class="container py-5">
+        @if (amplifiers != null && amplifiers.Any())
+        {
+            @foreach (var amplifier in amplifiers)
+            {
+                <div class="row justify-content-center mb-3">
+                    <div class="col-md-12 col-xl-10">
+                        <div class="card shadow-0 border rounded-3">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-12 col-lg-3 col-xl-3 mb-4 mb-lg-0">
+                                        <div class="bg-image hover-zoom ripple rounded ripple-surface">
+                                            <img src="data:image/png;base64,@Convert.ToBase64String(amplifier.ImageDataList.FirstOrDefault())" class="w-100" />
+                                            <a href="#!">
+                                                <div class="hover-overlay">
+                                                    <div class="mask" style="background-color: rgba(253, 253, 253, 0.15);"></div>
+                                                </div>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-lg-6 col-xl-6">
+                                        <h5>@amplifier.ModelName</h5>                                       
+                                    </div>
+                                    <div class="col-md-6 col-lg-3 col-xl-3 border-sm-start-none border-start">
+                                        <div class="d-flex flex-row align-items-center mb-1">
+                                            <h4 class="mb-1 me-1">$@amplifier.Price</h4>
+                                            <!-- Add DiscountedPrice if available -->
+                                        </div>
+                                        <div class="d-flex flex-column mt-4">
+                                            <button class="btn btn-primary btn-sm" type="button">Details</button>
+                                            <button class="btn btn-success btn-sm mt-1" type="button">
+                                                Add to cart
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <p>Loading Amplifier...</p>
+        }
+    </div>
+</section>
+
+
+
+@code {
+    private List<Amplifier>? amplifiers = new List<Amplifier>();
+    private string? error = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            // Call the API
+            amplifiers = await GetAmplifierInfo();
+        }
+        catch (Exception ex)
+        {
+            error = ex.Message;
+        }
+    }
+    //Method declaration that calls the API
+    private async Task<List<Amplifier>> GetAmplifierInfo()
+    {
+        using (var httpClient = new HttpClient())
+        {
+            // Replace with your actual API endpoint
+            var apiUrl = "https://diamonddesign863-001-site1.itempurl.com/api/amplifier";
+            var localApiUrl = "https://localhost:7222/api/Amplifier";
+
+            var responseStream = await httpClient.GetStreamAsync(apiUrl);
+
+            // Handle empty or null response
+            if (responseStream == null)
+            {
+                return new List<Amplifier>();
+            }
+
+            // Deserialize the response JSON into a list of Amplifier objects
+            return await JsonSerializer.DeserializeAsync<List<Amplifier>>(responseStream, new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                });
+        }
+    }
+
+
+    private class Amplifier
+    {
+        public int Id { get; set; }
+
+        [NotMapped]
+        [DataType(DataType.Upload)]
+        public List<IFormFile>? ImageFiles { get; set; }
+        public List<byte[]>? ImageDataList { get; set; }
+        public List<string>? ImageTypeList { get; set; }
+
+        [StringLength(255)]
+        public string? ModelName { get; set; }
+
+        [StringLength(350)]
+        public string? Description { get; set; }
+
+        [StringLength(50)]
+        public string? PowerAt4Ohms { get; set; }
+
+        [StringLength(50)]
+        public string? PowerAt2Ohms { get; set; }
+
+        [StringLength(50)]
+        public string? PowerAt1Ohm { get; set; }
+
+        [StringLength(50)]
+        public string? BridgePowerAt40hms { get; set; }
+
+        [StringLength(50)]
+        public string? BridgePowerAt20hms { get; set; }
+
+        [StringLength(50)]
+        public string? OperatingVoltage { get; set; }
+
+        [StringLength(50)]
+        public string? CurrentDrawMusic { get; set; }
+
+        [StringLength(50)]
+        public string? CurrentDrawMax { get; set; }
+
+        [StringLength(50)]
+        public string? RecommendedFuseMusic { get; set; }
+
+        [StringLength(50)]
+        public string? TotalEfficiency { get; set; }
+
+        [StringLength(50)]
+        public string? DampingFactor { get; set; }
+
+        [StringLength(50)]
+        public string? FrequencyResponseMinus3dB { get; set; }
+
+        [StringLength(50)]
+        public string? SignalToNoiseRatio { get; set; }
+
+        [StringLength(50)]
+        public string? CrossoverHPF { get; set; }
+
+        [StringLength(50)]
+        public string? CrossoverLPF { get; set; }
+
+        [StringLength(50)]
+        public string? THDPlusN { get; set; }
+
+        [StringLength(50)]
+        public string? ProductDimensions1 { get; set; }
+
+        [StringLength(50)]
+        public string? ProductDimensions2 { get; set; }
+        [Range(0, 999999)]
+        public double? Price { get; set; }
+    }
+
+}
